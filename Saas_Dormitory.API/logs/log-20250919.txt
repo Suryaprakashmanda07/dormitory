@@ -1,0 +1,94 @@
+2025-09-19 22:53:00.849 +05:30 [INF] User profile is available. Using 'C:\Users\praka\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-09-19 22:53:01.974 +05:30 [INF] Now listening on: https://localhost:7024
+2025-09-19 22:53:01.982 +05:30 [INF] Now listening on: http://localhost:5103
+2025-09-19 22:53:02.158 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-09-19 22:53:02.160 +05:30 [INF] Hosting environment: Development
+2025-09-19 22:53:02.163 +05:30 [INF] Content root path: C:\Users\praka\source\repos\Saas_Dormitory.API\Saas_Dormitory.API
+2025-09-19 22:54:50.037 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7024/ - null null
+2025-09-19 22:54:50.740 +05:30 [INF] Executing endpoint 'HTTP: GET /'
+2025-09-19 22:54:50.771 +05:30 [INF] Executing RedirectResult, redirecting to /scalar.
+2025-09-19 22:54:50.775 +05:30 [INF] Executed endpoint 'HTTP: GET /'
+2025-09-19 22:54:50.784 +05:30 [INF] HTTP GET / responded 302 in 245.9908 ms
+2025-09-19 22:54:50.806 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7024/ - 302 0 null 796.7287ms
+2025-09-19 22:54:50.822 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7024/scalar - null null
+2025-09-19 22:54:50.903 +05:30 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2025-09-19 22:54:51.037 +05:30 [INF] Executing RedirectResult, redirecting to scalar/.
+2025-09-19 22:54:51.040 +05:30 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2025-09-19 22:54:51.043 +05:30 [INF] HTTP GET /scalar responded 302 in 204.6626 ms
+2025-09-19 22:54:51.048 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7024/scalar - 302 0 null 225.4292ms
+2025-09-19 22:54:51.055 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7024/scalar/ - null null
+2025-09-19 22:54:51.072 +05:30 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2025-09-19 22:54:51.343 +05:30 [INF] Write content with HTTP Response ContentType of text/html
+2025-09-19 22:54:51.368 +05:30 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2025-09-19 22:54:51.370 +05:30 [INF] HTTP GET /scalar/ responded 200 in 303.9683 ms
+2025-09-19 22:54:51.374 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7024/scalar/ - 200 null text/html 319.1114ms
+2025-09-19 22:54:51.429 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7024/scalar/scalar.js - null null
+2025-09-19 22:54:51.429 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7024/_framework/aspnetcore-browser-refresh.js - null null
+2025-09-19 22:54:51.429 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7024/scalar/scalar.aspnetcore.js - null null
+2025-09-19 22:54:51.435 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7024/_vs/browserLink - null null
+2025-09-19 22:54:51.436 +05:30 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2025-09-19 22:54:51.447 +05:30 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2025-09-19 22:54:51.491 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7024/_framework/aspnetcore-browser-refresh.js - 200 16511 application/javascript; charset=utf-8 61.7524ms
+2025-09-19 22:54:51.507 +05:30 [INF] Setting HTTP status code 304.
+2025-09-19 22:54:51.508 +05:30 [INF] Setting HTTP status code 304.
+2025-09-19 22:54:51.515 +05:30 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2025-09-19 22:54:51.519 +05:30 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2025-09-19 22:54:51.521 +05:30 [INF] HTTP GET /scalar/scalar.js responded 304 in 85.1164 ms
+2025-09-19 22:54:51.523 +05:30 [INF] HTTP GET /scalar/scalar.aspnetcore.js responded 304 in 75.7491 ms
+2025-09-19 22:54:51.529 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7024/scalar/scalar.js - 304 null null 100.2442ms
+2025-09-19 22:54:51.533 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7024/scalar/scalar.aspnetcore.js - 304 null null 103.6063ms
+2025-09-19 22:54:51.631 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7024/_vs/browserLink - 200 null text/javascript; charset=UTF-8 196.2524ms
+2025-09-19 22:54:52.025 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7024/openapi/v1.json - null null
+2025-09-19 22:54:52.035 +05:30 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2025-09-19 22:54:52.378 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7024/openapi/v1.json - null null
+2025-09-19 22:54:52.383 +05:30 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2025-09-19 22:54:52.387 +05:30 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2025-09-19 22:54:52.392 +05:30 [INF] HTTP GET /openapi/v1.json responded 200 in 357.7476 ms
+2025-09-19 22:54:52.401 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7024/openapi/v1.json - 200 null application/json;charset=utf-8 375.4519ms
+2025-09-19 22:54:52.405 +05:30 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2025-09-19 22:54:52.419 +05:30 [INF] HTTP GET /openapi/v1.json responded 200 in 31.9603 ms
+2025-09-19 22:54:52.424 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7024/openapi/v1.json - 200 null application/json;charset=utf-8 46.176ms
+2025-09-19 23:13:38.353 +05:30 [INF] Request starting HTTP/2 POST https://localhost:7024/api/Auth/register - application/json 95
+2025-09-19 23:13:38.441 +05:30 [INF] Executing endpoint 'Saas_Dormitory.API.Controllers.AuthController.Register (Saas_Dormitory.API)'
+2025-09-19 23:13:38.729 +05:30 [INF] Route matched with {action = "Register", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Register(Models.ResponseDTO.RegisterModel) on controller Saas_Dormitory.API.Controllers.AuthController (Saas_Dormitory.API).
+2025-09-19 23:14:11.734 +05:30 [INF] Executed DbCommand (52ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedUserName] = @__normalizedUserName_0
+2025-09-19 23:14:11.983 +05:30 [INF] Executed DbCommand (16ms) [Parameters=[@p0='?' (Size = 450), @p1='?' (DbType = Int32), @p2='?' (Size = 4000), @p3='?' (Size = 256), @p4='?' (DbType = Boolean), @p5='?' (DbType = Boolean), @p6='?' (DbType = DateTimeOffset), @p7='?' (Size = 256), @p8='?' (Size = 256), @p9='?' (Size = 4000), @p10='?' (Size = 4000), @p11='?' (DbType = Boolean), @p12='?' (Size = 4000), @p13='?' (DbType = Boolean), @p14='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [AspNetUsers] ([Id], [AccessFailedCount], [ConcurrencyStamp], [Email], [EmailConfirmed], [LockoutEnabled], [LockoutEnd], [NormalizedEmail], [NormalizedUserName], [PasswordHash], [PhoneNumber], [PhoneNumberConfirmed], [SecurityStamp], [TwoFactorEnabled], [UserName])
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14);
+2025-09-19 23:14:44.319 +05:30 [INF] Executed DbCommand (24ms) [Parameters=[@__normalizedName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @__normalizedName_0
+2025-09-19 23:14:47.381 +05:30 [INF] Executed DbCommand (24ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @__normalizedRoleName_0
+2025-09-19 23:14:47.431 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[@__p_0='?' (Size = 450), @__p_1='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[UserId], [a].[RoleId]
+FROM [AspNetUserRoles] AS [a]
+WHERE [a].[UserId] = @__p_0 AND [a].[RoleId] = @__p_1
+2025-09-19 23:14:47.449 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[@__normalizedRoleName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @__normalizedRoleName_0
+2025-09-19 23:14:47.470 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[@__normalizedUserName_0='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedUserName] = @__normalizedUserName_0
+2025-09-19 23:14:47.549 +05:30 [INF] Executed DbCommand (29ms) [Parameters=[@p0='?' (Size = 450), @p1='?' (Size = 450), @p16='?' (Size = 450), @p2='?' (DbType = Int32), @p3='?' (Size = 4000), @p17='?' (Size = 4000), @p4='?' (Size = 256), @p5='?' (DbType = Boolean), @p6='?' (DbType = Boolean), @p7='?' (DbType = DateTimeOffset), @p8='?' (Size = 256), @p9='?' (Size = 256), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Boolean), @p13='?' (Size = 4000), @p14='?' (DbType = Boolean), @p15='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [AspNetUserRoles] ([RoleId], [UserId])
+VALUES (@p0, @p1);
+UPDATE [AspNetUsers] SET [AccessFailedCount] = @p2, [ConcurrencyStamp] = @p3, [Email] = @p4, [EmailConfirmed] = @p5, [LockoutEnabled] = @p6, [LockoutEnd] = @p7, [NormalizedEmail] = @p8, [NormalizedUserName] = @p9, [PasswordHash] = @p10, [PhoneNumber] = @p11, [PhoneNumberConfirmed] = @p12, [SecurityStamp] = @p13, [TwoFactorEnabled] = @p14, [UserName] = @p15
+OUTPUT 1
+WHERE [Id] = @p16 AND [ConcurrencyStamp] = @p17;
+2025-09-19 23:14:50.167 +05:30 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2025-09-19 23:14:50.180 +05:30 [INF] Executed action Saas_Dormitory.API.Controllers.AuthController.Register (Saas_Dormitory.API) in 71440.3632ms
+2025-09-19 23:14:50.184 +05:30 [INF] Executed endpoint 'Saas_Dormitory.API.Controllers.AuthController.Register (Saas_Dormitory.API)'
+2025-09-19 23:14:50.186 +05:30 [INF] HTTP POST /api/Auth/register responded 200 in 71766.3968 ms
+2025-09-19 23:14:50.198 +05:30 [INF] Request finished HTTP/2 POST https://localhost:7024/api/Auth/register - 200 null text/plain; charset=utf-8 71857.1435ms

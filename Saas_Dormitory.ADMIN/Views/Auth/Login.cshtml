@@ -1,0 +1,62 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@{
+    Layout = "~/Views/Shared/IdentityLayout.cshtml";
+    ViewBag.Title = "Login"; 
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="~/code/scripts/authjs/login.js"></script>
+
+    <style>
+        /* Mobile view adjustment */
+        @@media (max-width: 576px) {
+            .login-box {
+                width: 335px !important; /* make it wider but still fit screen */
+                max-width: 100% !important;
+            }
+        }
+
+    </style>
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="card card-outline card-primary">
+            <div class="card-header text-center">
+                <a href="#" class="h1"><b>Admin</b>LTE</a>
+            </div>
+            <div class="card-body">
+                <p class="login-box-msg">Sign in to start your session</p>
+                <form id="Loginform">
+                    <div class="input-group mb-3">
+                        <input type="text" name="Email" id="txtEmail" class="form-control" placeholder="Email">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fa-solid fa-envelope"></span>
+                            </div>
+                        </div>
+                        <span class="invalid-feedback"></span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="password" name="Password" id="txtPassword" class="form-control" placeholder="Password">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                        <span class="invalid-feedback"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" id="btnSubmit" class="btn btn-primary text-white btn-block text-nowrap">Sign In</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

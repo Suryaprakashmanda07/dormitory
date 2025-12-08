@@ -1,0 +1,6 @@
+2025-10-14 21:57:09.545 +05:30 [INF] User profile is available. Using 'C:\Users\praka\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-14 21:57:10.147 +05:30 [INF] Now listening on: https://localhost:7024
+2025-10-14 21:57:10.155 +05:30 [INF] Now listening on: http://localhost:5103
+2025-10-14 21:57:10.237 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-14 21:57:10.238 +05:30 [INF] Hosting environment: Development
+2025-10-14 21:57:10.240 +05:30 [INF] Content root path: C:\Users\praka\source\repos\Saas_Dormitory.API\Saas_Dormitory.API

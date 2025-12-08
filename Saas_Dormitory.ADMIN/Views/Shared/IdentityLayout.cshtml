@@ -1,0 +1,79 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+
+<script>
+    // Assign directly from configuration (no Context.Items)
+    window.BaseURL = '@Configuration["AppSettings:BaseUrl"]';
+    window.ImageURL = '@Configuration["AppSettings:ImageUrl"]';
+</script>
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Admin LTE</title>
+    <link rel="icon" href="~/images/logo.jpeg" type="image/x-icon">
+
+
+    <link rel="stylesheet" href="~/lib/fontawesome/css/all.min.css" />
+
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <!-- icheck bootstrap -->
+    <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <!-- jQuery UI CSS (for datepicker/sortable) -->
+    <link rel="stylesheet" href="~/plugins/jquery-ui/jquery-ui.min.css" />
+    <link rel="stylesheet" href="~/plugins/jquery-ui/jquery-ui.structure.min.css" />
+    <link rel="stylesheet" href="~/plugins/jquery-ui/jquery-ui.theme.min.css" />
+
+    <link href="~/plugins/toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/plugins/toastr/toastr.css" rel="stylesheet" />
+
+    <link href="~/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+    <link href="~/plugins/sweetalert2/sweetalert2.css" rel="stylesheet" />
+    <link href="~/code/styles/style.css" rel="stylesheet" />
+
+
+
+    <!-- jQuery -->
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.min.js"></script>
+    <!-- jQuery UI for datepicker/sortable -->
+    <script src="~/plugins/jquery-ui/jquery-ui.min.js"></script>
+
+    <!-- jQuery Validation -->
+    <script src="~/plugins/jquery-validation/jquery.validate.min.js"></script>
+
+    <script src="~/plugins/toastr/toastr.min.js"></script>
+
+
+    <script src="~/plugins/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="~/plugins/sweetalert2/sweetalert2.all.js"></script>
+    <script src="~/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="~/plugins/sweetalert2/sweetalert2.js"></script>
+    <script src="~/code/scripts/layoutscript.js"></script>
+</head>
+<body>
+    <div>
+        @RenderBody()
+    </div>
+
+    <div id="overlay" class="overlay">
+
+        <div id="spinner" class="spinner"></div>
+    </div>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
+</body>
+</html>
