@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Saas_Dormitory.API.Helpers;
 using Saas_Dormitory.DAL;
 using Saas_Dormitory.Models;   
 using Saas_Dormitory.Models.ResponseDTO;
-using Serilog;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 
@@ -20,15 +21,16 @@ namespace Saas_Dormitory.API.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _config;
-
+        private readonly IWebHostEnvironment _env;
         public AuthController(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IConfiguration config)
+            IConfiguration config, IWebHostEnvironment env)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _config = config;
+            _env = env;
         }
 
         // 🔐 REGISTER
@@ -126,12 +128,9 @@ namespace Saas_Dormitory.API.Controllers
                         RoleName = userRoles.FirstOrDefault(),
                         UserId = user.Id,
                         Email = user.Email,
+                        //Username = userProfile?.FullName
+
                     };
-
-                    response.Valid = true;
-                    response.Msg = "Login successful";
-
-
                 }
                 else
                 {
@@ -141,7 +140,7 @@ namespace Saas_Dormitory.API.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Exception in Login: {Message}", ex.Message);
+               // Log.Error(ex, "Exception in Login: {Message}", ex.Message);
                 response.Valid = false;
                 response.Msg = "controller: AuthController, method: Login, error: " + ex.Message;
             }
@@ -149,7 +148,7 @@ namespace Saas_Dormitory.API.Controllers
             return Ok(response);
         }
 
-        [Authorize]
+       // [Authorize]
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
         {
@@ -165,6 +164,31 @@ namespace Saas_Dormitory.API.Controllers
 
             return Ok(new { message = "Password changed successfully" });
         }
+        [HttpPost("ChangePasswordByAdmin")]
+        public async Task<IActionResult> ChangeAdminPassword(ResetPasswordAdminModel model)
+        {
+            var user = await _userManager.FindByIdAsync(model.UserId);
+
+            if (user == null)
+                return BadRequest(new { message = "User not found" });
+
+            // ✅ Allow ONLY Admin
+            var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+            if (!isAdmin)
+                return BadRequest(new { message = "Only Admin password can be changed" });
+
+            // ✅ Generate reset token
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            // ✅ Reset password
+            var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok(new { message = "Password updated successfully" });
+        }
+
         [AllowAnonymous]
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordModel model)
@@ -175,14 +199,41 @@ namespace Saas_Dormitory.API.Controllers
                 return Ok(new { message = "If user exists, reset link sent." });
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedToken = Uri.EscapeDataString(token);
 
-            // TODO: send by email OR return for testing
-            return Ok(new
-            {
-                message = "Reset token generated",
-                resetToken = token,
-                email = user.Email
-            });
+            // Create Reset Link
+            string baseUrl = _config["AppSettings:FrontendBaseUrl"];
+
+            string resetLink = $"{baseUrl}/reset-password?email={user.Email}&token={encodedToken}";
+
+            // Load template
+            string templatePath = Path.Combine(_env.WebRootPath, "EmailTemplates", "ResetPasswordTemplate.html");
+            string template = LoadEmailTemplate(templatePath);
+
+            // Replace placeholders
+            string emailBody = template
+                .Replace("{{UserName}}", user.UserName)
+                .Replace("{{ResetLink}}", resetLink);
+
+            // Send email
+            SendEmail _SendEmail = new SendEmail();
+            await _SendEmail.SendHtmlEmail(user.Email, "Password Reset", emailBody);
+
+            return Ok(new { message = "Reset link sent to email." });
+        }
+        private string LoadEmailTemplate(string filePath)
+        {
+            return System.IO.File.ReadAllText(filePath);
+        }
+
+
+        private MailMessage CreateMailMessage(string from, string to, string subject, string body)
+        {
+            var message = new MailMessage(from, to);
+            message.Subject = subject;
+            message.Body = body;
+            message.IsBodyHtml = true; // IMPORTANT
+            return message;
         }
         [AllowAnonymous]
         [HttpPost("ResetPassword")]
@@ -191,14 +242,22 @@ namespace Saas_Dormitory.API.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
-                return BadRequest(new { message = "Invalid request" });
+                return Ok(new {vaild=false, message = "Invalid request" });
 
-            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+            // Token must be decoded (important)
+            string decodedToken = Uri.UnescapeDataString(model.Token);
+
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, model.NewPassword);
 
             if (!result.Succeeded)
-                return BadRequest(result.Errors);
+                return Ok(new
+                {
+                    vaild = false,
+                    message = "Password reset failed",
+                    errors = result.Errors
+                });
 
-            return Ok(new { message = "Password reset successful" });
+            return Ok(new { vaild = true, message = "Password reset successful" });
         }
         [AllowAnonymous]
         [HttpPost("AdminLogin")]
@@ -230,7 +289,7 @@ namespace Saas_Dormitory.API.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Admin Login Error");
+               // Log.Error(ex, "Admin Login Error");
                 response.Valid = false;
                 response.Msg = ex.Message;
                 return Ok(response);
@@ -268,7 +327,7 @@ namespace Saas_Dormitory.API.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Tenant Login Error");
+                //Log.Error(ex, "Tenant Login Error");
                 response.Valid = false;
                 response.Msg = ex.Message;
                 return Ok(response);

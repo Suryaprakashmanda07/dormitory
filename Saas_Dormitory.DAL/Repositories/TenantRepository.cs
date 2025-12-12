@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Saas_Dormitory.DAL.Data;
+using Saas_Dormitory.DAL.Helpers;
 using Saas_Dormitory.DAL.Interface;
 using Saas_Dormitory.Models.ResponseDTO;
 using System;
@@ -13,10 +14,11 @@ namespace Saas_Dormitory.DAL.Repositories
     public class TenantRepository : ITenantRepository
     {
         private readonly DormitoryDbContext _db;
-
-        public TenantRepository(DormitoryDbContext db)
+        private readonly CurrentUserService _currentUser;
+        public TenantRepository(DormitoryDbContext db, CurrentUserService currentUser)
         {
             _db = db;
+            _currentUser = currentUser;
         }
 
         public async Task<ResponseDTO> CreateTenantAsync(CreateTenantRequestModel model, string UserId)
@@ -28,7 +30,6 @@ namespace Saas_Dormitory.DAL.Repositories
                 var tenant = new Tenant
                 {
                     TenantName = model.TenantName,
-                    Address = model.Address,
                     CreatedDate = DateTime.UtcNow
                 };
 
@@ -42,13 +43,14 @@ namespace Saas_Dormitory.DAL.Repositories
                     FullName = model.FullName,
                     Phone = model.Phone,
                     TenantId = tenant.TenantId, // ✅ Now this is correct
-                    //CreatedDate = DateTime.UtcNow,
-                    UserId = UserId
+                    CreatedDate = DateTime.UtcNow,
+                    UserId = UserId,
+                    CreatedBy= _currentUser.GetUserId()
                 };
 
                 _db.Userprofiles.Add(profile);
                 await _db.SaveChangesAsync();
-
+                resp.Id = tenant.TenantId;
                 resp.Valid = true;
                 resp.Msg = "Tenant and profile created successfully";
                 return resp;
@@ -72,7 +74,7 @@ namespace Saas_Dormitory.DAL.Repositories
                 if (tenant == null)
                 {
                     response.Valid = false;
-                    response.Msg = "Tenant not found";
+                    response.Msg = "Admin not found";
                     return response;
                 }
 
@@ -83,7 +85,9 @@ namespace Saas_Dormitory.DAL.Repositories
                 await _db.SaveChangesAsync();
 
                 response.Valid = true;
-                response.Msg = model.IsActive ? "Tenant activated" : "Tenant deactivated";
+                response.Msg = model.IsActive
+                                ? $"Admin '{tenant.TenantName}' activated successfully"
+                                : $"Admin '{tenant.TenantName}' deactivated successfully";
                 return response;
             }
             catch (Exception ex)
@@ -97,26 +101,33 @@ namespace Saas_Dormitory.DAL.Repositories
         public async Task<SingleItemResponseDTO<TenantDetailsModel>> GetTenantByTenantIdAsync(int tenantId)
         {
             var response = new SingleItemResponseDTO<TenantDetailsModel>();
-
+            //Log.Error( "Error in CreateSubscriptionPlanAsync");
             try
             {
-                var tenantDetails = await (
-                    from t in _db.Tenants
-                    join u in _db.Userprofiles on t.TenantId equals u.TenantId
-                    join au in _db.AspNetUsers on u.UserId equals au.Id   // AspNetUsers
-                    where t.TenantId == tenantId
-                    select new TenantDetailsModel
+                var tenantDetails = await _db.Tenants
+                    .Include(t => t.Userprofiles)
+                        .ThenInclude(up => up.User)
+                    .Where(t => t.TenantId == tenantId )
+                    .Select(t => new TenantDetailsModel
                     {
                         TenantId = t.TenantId,
                         TenantName = t.TenantName,
-                        Address = t.Address,
+                        FullName=t.Userprofiles.Select(a=>a.FullName).FirstOrDefault(),
                         IsActive = (bool)t.IsActive,
+                        UserId = t.Userprofiles.Select(x => x.UserId).FirstOrDefault(),
+                        Email = t.Userprofiles
+                                 .Select(up => up.User.Email)
+                                 .FirstOrDefault(),
 
-                        FullName = u.FullName,
-                        Phone = u.Phone,
-                        Email = au.Email
-                    }
-                ).FirstOrDefaultAsync();
+                        Phone = t.Userprofiles
+                                 .Select(up => up.User.PhoneNumber)
+                                 .FirstOrDefault()
+                    })
+                    .FirstOrDefaultAsync();
+
+
+                response.Item = tenantDetails;
+                response.Msg = tenantDetails == null ? "Tenant not found" : "Success";
 
                 if (tenantDetails == null)
                 {
@@ -140,50 +151,64 @@ namespace Saas_Dormitory.DAL.Repositories
         }
 
 
+
         public async Task<ListResponseDTO<TenantDetailsModel>> GetAllTenantsAsync(PaginationRequestModel model)
         {
             var response = new ListResponseDTO<TenantDetailsModel>();
 
             try
             {
-                var query =
-                    from t in _db.Tenants
-                    join u in _db.Userprofiles on t.TenantId equals u.TenantId
-                    join au in _db.AspNetUsers on u.UserId equals au.Id
-                    select new TenantDetailsModel
+                var query = _db.Tenants
+                    .Where(t => t.Userprofiles.Any(up =>
+                        up.User.Roles.Any(r => r.Name.ToLower() == "admin")
+                    ))
+                    .Select(t => new TenantDetailsModel
                     {
                         TenantId = t.TenantId,
                         TenantName = t.TenantName,
-                        Address = t.Address,
-                        FullName = u.FullName,
-                        Phone = u.Phone,
-                        Email = au.Email
-                    };
+                        UserId = t.Userprofiles
+                                    .Where(up => up.User.Roles.Any(r => r.Name.ToLower() == "admin"))
+                                    .Select(x => x.UserId)
+                                    .FirstOrDefault(),
+
+                        FullName = t.Userprofiles
+                                    .Where(up => up.User.Roles.Any(r => r.Name.ToLower() == "admin"))
+                                    .Select(x => x.FullName)
+                                    .FirstOrDefault(),
+
+                        Phone = t.Userprofiles
+                                    .Where(up => up.User.Roles.Any(r => r.Name.ToLower() == "admin"))
+                                    .Select(x => x.Phone)
+                                    .FirstOrDefault(),
+
+                        Email = t.Userprofiles
+                                    .Where(up => up.User.Roles.Any(r => r.Name.ToLower() == "admin"))
+                                    .Select(x => x.User.Email)
+                                    .FirstOrDefault()
+                    })
+                    .AsQueryable();
 
                 // ✅ SEARCH
                 if (!string.IsNullOrWhiteSpace(model.Search))
                 {
                     var s = model.Search.ToLower();
+
                     query = query.Where(x =>
-                        x.TenantName.ToLower().Contains(s) ||
-                        x.Address.ToLower().Contains(s) ||
-                        x.FullName.ToLower().Contains(s) ||
-                        x.Phone.ToLower().Contains(s) ||
-                        x.Email.ToLower().Contains(s)
+                        (x.TenantName ?? "").ToLower().Contains(s) ||
+                        (x.FullName ?? "").ToLower().Contains(s) ||
+                        (x.Phone ?? "").ToLower().Contains(s) ||
+                        (x.Email ?? "").ToLower().Contains(s)
                     );
                 }
 
                 // ✅ SORT
-                query = model.SortColumn.ToLower() switch
+                query = model.SortColumn?.ToLower() switch
                 {
                     "tenantname" => model.SortDirection == "desc"
                         ? query.OrderByDescending(x => x.TenantName)
                         : query.OrderBy(x => x.TenantName),
 
-                    "address" => model.SortDirection == "desc"
-                        ? query.OrderByDescending(x => x.Address)
-                        : query.OrderBy(x => x.Address),
-
+                   
                     "fullname" => model.SortDirection == "desc"
                         ? query.OrderByDescending(x => x.FullName)
                         : query.OrderBy(x => x.FullName),
@@ -212,7 +237,7 @@ namespace Saas_Dormitory.DAL.Repositories
 
                 // ✅ RESPONSE
                 response.Items = result;
-                //response.TotalRecords = totalRecords;
+                response.iTotalRecords = totalRecords;
                 //response.PageNumber = pageNumber;
                 //response.PageSize = pageSize;
                 response.Valid = true;
@@ -246,12 +271,11 @@ namespace Saas_Dormitory.DAL.Repositories
 
                 // 2. Update Tenant Fields
                 tenant.TenantName = model.TenantName;
-                tenant.Address = model.Address;
                 tenant.UpdatedDate = DateTime.UtcNow;
 
                 // 3. Get Related User Profile
                 var profile = await _db.Userprofiles
-                                       .FirstOrDefaultAsync(u => u.UserId == model.UserId);
+                                       .FirstOrDefaultAsync(u => u.TenantId == model.TenantId && u.UserId==model.UserId);
 
                 if (profile == null)
                 {

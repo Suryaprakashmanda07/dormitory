@@ -9,6 +9,7 @@ namespace Saas_Dormitory.DAL
 {
     public class ApplicationUser : IdentityUser
     {
-        public Guid TenantId { get; set; }
+        // public Guid TenantId { get; set; }
+        public int TenantId { get; set; }
     }
 }

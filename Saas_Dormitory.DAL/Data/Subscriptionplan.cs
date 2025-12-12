@@ -21,5 +21,9 @@ public partial class Subscriptionplan
 
     public string? CreatedBy { get; set; }
 
+    public int? Period { get; set; }
+
+    public bool? Isactive { get; set; }
+
     public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
 }

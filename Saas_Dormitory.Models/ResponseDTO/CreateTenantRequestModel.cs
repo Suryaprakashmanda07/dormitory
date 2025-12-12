@@ -19,17 +19,13 @@ namespace Saas_Dormitory.Models.ResponseDTO
         public string? Password { get; set; }
         [Required]
         public string? Phone { get; set; }
-        [Required]
-        public string? Address { get; set; }
     }
 
     public class UpdateTenantRequestModel
     {
-        public int TenantId { get; set; }
         public string UserId { get; set; }
-        public string TenantName { get; set; }
-        public string Address { get; set; }
-
+        public int TenantId { get; set; }
+        public string TenantName { get; set; }        
         public string FullName { get; set; }
         public string Phone { get; set; }
     }
@@ -42,12 +38,12 @@ namespace Saas_Dormitory.Models.ResponseDTO
     }
     public class TenantDetailsModel
     {
+        public string UserId { get; set; }
         public string? TenantName { get; set; }
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
         public string? Phone { get; set; }
-        public string? Address { get; set; }
         public int TenantId { get; set; }
         public bool IsActive { get; set; } = false;
 

@@ -1,4 +1,5 @@
-﻿using Saas_Dormitory.DAL.Interface;
+﻿using Saas_Dormitory.DAL.Helpers;
+using Saas_Dormitory.DAL.Interface;
 using Saas_Dormitory.DAL.Repositories;
 
 namespace Saas_Dormitory.API.Extensions
@@ -9,7 +10,10 @@ namespace Saas_Dormitory.API.Extensions
         {
             services.AddScoped<ITenantRepository, TenantRepository>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
-            //services.AddScoped<TenantService>();
+            services.AddScoped<ISubscriptionPlansRepository, SubscriptionPlansRepository>();
+            services.AddScoped<IPropertiesRepository, PropertiesRepository>();
+
+            services.AddScoped<CurrentUserService>();
 
             return services;
         }

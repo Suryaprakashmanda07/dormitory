@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Saas_Dormitory.DAL;
 using Saas_Dormitory.DAL.Interface;
@@ -9,6 +10,7 @@ namespace Saas_Dormitory.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+   // [Authorize]
     public class TenantsController : ControllerBase
     {
         private readonly ITenantRepository _tenantRepo;
@@ -38,7 +40,7 @@ namespace Saas_Dormitory.API.Controllers
                 {
                     resp.Valid = false;
                     resp.Msg = "Email already exists";
-                    return BadRequest(resp);
+                    return Ok(resp);
                 }
 
                 // ✅ Check duplicate phone
@@ -47,7 +49,7 @@ namespace Saas_Dormitory.API.Controllers
                 {
                     resp.Valid = false;
                     resp.Msg = "Phone number already exists";
-                    return BadRequest(resp);
+                    return Ok(resp);
                 }
 
                 // ✅ Create user
@@ -58,14 +60,14 @@ namespace Saas_Dormitory.API.Controllers
                     PhoneNumber = request.Phone,
                     EmailConfirmed = true
                 };
-
+               // user.TenantId=user.Id;
                 var result = await _userManager.CreateAsync(user, request.Password);
 
                 if (!result.Succeeded)
                 {
                     resp.Valid = false;
                     resp.Msg = result.Errors.FirstOrDefault()?.Description;
-                    return BadRequest(resp);
+                    return Ok(resp);
                 }
 
                 // ✅ Ensure Admin role exists
@@ -77,13 +79,28 @@ namespace Saas_Dormitory.API.Controllers
                 // ✅ Assign role
                 await _userManager.AddToRoleAsync(user, "Admin");
 
-                // ✅ Create Tenant entry
-                var tenantId = await _tenantRepo.CreateTenantAsync(request, user.Id);
+                var tenant = await _tenantRepo.CreateTenantAsync(request, user.Id);
+                if (!tenant.Valid)
+                {
+                    await _userManager.DeleteAsync(user); // Rollback
+                    resp.Valid = false;
+                    resp.Msg = tenant.Msg;
+                    return Ok(resp);
+                }
+                var createdUser = await _userManager.FindByIdAsync(user.Id);
 
+                createdUser.TenantId = tenant.Id;
+
+                var result12 = await _userManager.UpdateAsync(createdUser);
+
+                if (!result12.Succeeded)
+                {
+                    var errors = string.Join(", ", result12.Errors.Select(e => e.Description));
+                    throw new Exception("Update failed: " + errors);
+                }
                 // ✅ Final success response
                 resp.Valid = true;
-                resp.Msg = "Tenant and Admin created successfully";
-
+                resp.Msg = "Account created successfully.";
                 return Ok(resp);
             }
             catch (Exception ex)

@@ -53,7 +53,7 @@ public partial class DormitoryDbContext : DbContext
 
     public virtual DbSet<Userprofile> Userprofiles { get; set; }
 
-
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AspNetRole>(entity =>
@@ -80,6 +80,7 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(256);
             entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
             entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+            entity.Property(e => e.TenantId).HasDefaultValue(0);
             entity.Property(e => e.UserName).HasMaxLength(256);
 
             entity.HasMany(d => d.Roles).WithMany(p => p.Users)
@@ -162,10 +163,7 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.IsOccupied)
                 .HasDefaultValue(false)
                 .HasColumnName("is_occupied");
@@ -195,10 +193,7 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.Email)
                 .HasMaxLength(150)
                 .HasColumnName("email");
@@ -229,10 +224,7 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.DueDate).HasColumnName("due_date");
             entity.Property(e => e.InvoiceMonth).HasColumnName("invoice_month");
             entity.Property(e => e.RentAmount)
@@ -267,10 +259,7 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.IsRead)
                 .HasDefaultValue(false)
                 .HasColumnName("is_read");
@@ -305,15 +294,9 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.InvoiceId).HasColumnName("invoice_id");
-            entity.Property(e => e.PaymentDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("payment_date");
+            entity.Property(e => e.PaymentDate).HasColumnName("payment_date");
             entity.Property(e => e.PaymentMethod)
                 .HasMaxLength(50)
                 .HasColumnName("payment_method");
@@ -351,10 +334,10 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.Isactive)
+                .HasDefaultValue(true)
+                .HasColumnName("isactive");
             entity.Property(e => e.Name)
                 .HasMaxLength(200)
                 .HasColumnName("name");
@@ -362,9 +345,7 @@ public partial class DormitoryDbContext : DbContext
                 .HasMaxLength(100)
                 .HasColumnName("state");
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
-            entity.Property(e => e.UpdatedDate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("updated_date");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
 
             entity.HasOne(d => d.Tenant).WithMany(p => p.Properties)
                 .HasForeignKey(d => d.TenantId)
@@ -384,10 +365,7 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.PropertyId).HasColumnName("property_id");
             entity.Property(e => e.RentAmount)
                 .HasPrecision(10, 2)
@@ -429,10 +407,7 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.GuestId).HasColumnName("guest_id");
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
@@ -467,10 +442,7 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.EndDate).HasColumnName("end_date");
             entity.Property(e => e.PlanId).HasColumnName("plan_id");
             entity.Property(e => e.StartDate).HasColumnName("start_date");
@@ -502,21 +474,20 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.Isactive)
+                .HasDefaultValue(true)
+                .HasColumnName("isactive");
             entity.Property(e => e.MaxProperties).HasColumnName("max_properties");
             entity.Property(e => e.MaxUsers).HasColumnName("max_users");
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .HasColumnName("name");
+            entity.Property(e => e.Period).HasColumnName("period");
             entity.Property(e => e.Price)
                 .HasPrecision(10, 2)
                 .HasColumnName("price");
-            entity.Property(e => e.UpdatedDate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("updated_date");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
         });
 
         modelBuilder.Entity<Tenant>(entity =>
@@ -526,22 +497,17 @@ public partial class DormitoryDbContext : DbContext
             entity.ToTable("tenants");
 
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
-            entity.Property(e => e.Address).HasColumnName("address");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.IsActive)
                 .HasDefaultValue(true)
                 .HasColumnName("is_active");
             entity.Property(e => e.TenantName)
                 .HasMaxLength(200)
                 .HasColumnName("tenant_name");
-            entity.Property(e => e.UpdatedDate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("updated_date");
+            entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
         });
 
         modelBuilder.Entity<Userprofile>(entity =>
@@ -556,18 +522,14 @@ public partial class DormitoryDbContext : DbContext
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
-            entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnName("created_date");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.FullName)
                 .HasMaxLength(150)
                 .HasColumnName("full_name");
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .HasColumnName("phone");
-            entity.Property(e => e.Role)
-                .HasMaxLength(50)
-                .HasColumnName("role");
+            entity.Property(e => e.Propertyid).HasColumnName("propertyid");
             entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             entity.Property(e => e.UpdatedDate).HasColumnName("updated_date");
             entity.Property(e => e.UserId)
@@ -576,11 +538,11 @@ public partial class DormitoryDbContext : DbContext
 
             entity.HasOne(d => d.Tenant).WithMany(p => p.Userprofiles)
                 .HasForeignKey(d => d.TenantId)
-                .HasConstraintName("userprofiles_tenant_id_fkey");
+                .HasConstraintName("fk_userprofiles_tenant");
 
             entity.HasOne(d => d.User).WithOne(p => p.Userprofile)
                 .HasForeignKey<Userprofile>(d => d.UserId)
-                .HasConstraintName("fk_userprofile_user");
+                .HasConstraintName("fk_userprofiles_user");
         });
 
         OnModelCreatingPartial(modelBuilder);

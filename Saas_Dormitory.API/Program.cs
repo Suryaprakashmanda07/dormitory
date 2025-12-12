@@ -10,21 +10,13 @@ using Saas_Dormitory.API.Helpers;
 using Saas_Dormitory.DAL;
 using Saas_Dormitory.DAL.Data;
 using Scalar.AspNetCore;
-using Serilog;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Replace default logging
 //builder.Host.UseSerilog();
-builder.Host.UseSerilog((context, services, loggerConfig) =>
-{
-    loggerConfig
-        .ReadFrom.Configuration(context.Configuration)
-        .ReadFrom.Services(services)
-        .Enrich.FromLogContext()
-        .WriteTo.Console();
-});
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -73,6 +65,7 @@ builder.Services.AddOpenApi(options =>
         return Task.CompletedTask;
     });
 });
+builder.Services.AddHttpContextAccessor();
 
 // 🔑 Configure EF + Identity
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -87,11 +80,9 @@ builder.Services.AddDbContext<DormitoryDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddApplicationServices();
-
-// 🔑 Configure JWT Authentication
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "SuperSecretKey123!";
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "MyApi";
-
+#region JWT Configuration
+// Configure JWT Authentication
+var jwtSettings = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -102,17 +93,16 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
-        ValidateAudience = false,
+        ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
-        )
+            Encoding.UTF8.GetBytes(jwtSettings["Key"]))
     };
 });
-
-
+#endregion
 builder.Services.AddAuthorization();
 //builder.Services.AddScoped<IContactUsService, ContactUsRepository>();
 
@@ -121,23 +111,23 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalarApiReference(options =>
-    {
-        options
-        .WithPreferredScheme("Api-Key")
-        .WithApiKeyAuthentication(apiKey =>
-        {
-            apiKey.Token = "your-api-key";
-        });
-    });
+   
+    
 }
+app.MapOpenApi();
+app.MapScalarApiReference(options =>
+{
+    options
+    .WithPreferredScheme("Api-Key")
+    .WithApiKeyAuthentication(apiKey =>
+    {
+        apiKey.Token = "your-api-key";
+    });
+});
 app.MapGet("/", () => Results.Redirect("/scalar"));
-app.UseSerilogRequestLogging();
-app.UseAuthentication(); // 🔑 must come before UseAuthorization
-app.UseAuthorization();
+//app.UseSerilogRequestLogging();
 //app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 app.UseAuthorization();
 app.UseCors("AllowAll");
 app.MapControllers();

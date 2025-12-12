@@ -16,4 +16,10 @@ namespace Saas_Dormitory.Models.ResponseDTO
         [Required]
         public string? NewPassword { get; set; }
     }
+    public class ResetPasswordAdminModel
+    {
+        public string UserId { get; set; }
+        public string NewPassword { get; set; }
+    }
+
 }

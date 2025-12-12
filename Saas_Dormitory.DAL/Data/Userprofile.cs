@@ -15,13 +15,13 @@ public partial class Userprofile
 
     public string? Phone { get; set; }
 
-    public string? Role { get; set; }
-
     public DateTime? CreatedDate { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 
     public string? CreatedBy { get; set; }
+
+    public int? Propertyid { get; set; }
 
     public virtual Tenant Tenant { get; set; } = null!;
 
