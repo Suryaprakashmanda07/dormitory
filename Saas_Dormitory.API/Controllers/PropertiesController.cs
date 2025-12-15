@@ -34,8 +34,8 @@ namespace Saas_Dormitory.Controllers
             return Ok(result);
         }
 
-        //// ✅ DELETE
-        [HttpDelete("UpdatePropertyStatus")]
+        // ✅ STATUS TOGGLE
+        [HttpPost("UpdatePropertyStatus")]
         public async Task<IActionResult> UpdatePropertyStatus(int propertyId)
         {
             var result = await _propertiesRepo.UpdatePropertyStatusAsync(propertyId);

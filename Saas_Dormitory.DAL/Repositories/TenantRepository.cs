@@ -63,31 +63,32 @@ namespace Saas_Dormitory.DAL.Repositories
             }
         }
 
-        public async Task<ResponseDTO> ActivateDeactivateTenantAsync(TenantStatusRequestModel model)
+        public async Task<ResponseDTO> ActivateDeactivateTenantAsync(int tenantId)
         {
             var response = new ResponseDTO();
 
             try
             {
-                var tenant = await _db.Tenants.FindAsync(model.TenantId);
+                var tenant = await _db.Tenants.FindAsync(tenantId);
 
                 if (tenant == null)
                 {
                     response.Valid = false;
-                    response.Msg = "Admin not found";
+                    response.Msg = "Tenant not found";
                     return response;
                 }
 
-                tenant.IsActive = model.IsActive;
+                // ✅ AUTO TOGGLE STATUS (handle nullable bool)
+                tenant.IsActive = !(tenant.IsActive ?? false);
                 tenant.UpdatedDate = DateTime.UtcNow;
 
                 _db.Tenants.Update(tenant);
                 await _db.SaveChangesAsync();
 
                 response.Valid = true;
-                response.Msg = model.IsActive
-                                ? $"Admin '{tenant.TenantName}' activated successfully"
-                                : $"Admin '{tenant.TenantName}' deactivated successfully";
+                response.Msg = (bool)tenant.IsActive
+                                ? $"Tenant '{tenant.TenantName}' activated successfully"
+                                : $"Tenant '{tenant.TenantName}' deactivated successfully";
                 return response;
             }
             catch (Exception ex)
@@ -113,7 +114,7 @@ namespace Saas_Dormitory.DAL.Repositories
                         TenantId = t.TenantId,
                         TenantName = t.TenantName,
                         FullName=t.Userprofiles.Select(a=>a.FullName).FirstOrDefault(),
-                        IsActive = (bool)t.IsActive,
+                        IsActive = t.IsActive ?? false,
                         UserId = t.Userprofiles.Select(x => x.UserId).FirstOrDefault(),
                         Email = t.Userprofiles
                                  .Select(up => up.User.Email)
@@ -158,14 +159,15 @@ namespace Saas_Dormitory.DAL.Repositories
 
             try
             {
+                // Fetch ALL tenants (active and inactive)
+                // No .Where() clause here ensures we get both Active and Inactive users
                 var query = _db.Tenants
-                    .Where(t => t.Userprofiles.Any(up =>
-                        up.User.Roles.Any(r => r.Name.ToLower() == "admin")
-                    ))
                     .Select(t => new TenantDetailsModel
                     {
                         TenantId = t.TenantId,
                         TenantName = t.TenantName,
+                        // Make sure to map CreatedDate so we can sort by it later
+                        CreatedDate = t.CreatedDate,
                         UserId = t.Userprofiles
                                     .Where(up => up.User.Roles.Any(r => r.Name.ToLower() == "admin"))
                                     .Select(x => x.UserId)
@@ -184,7 +186,8 @@ namespace Saas_Dormitory.DAL.Repositories
                         Email = t.Userprofiles
                                     .Where(up => up.User.Roles.Any(r => r.Name.ToLower() == "admin"))
                                     .Select(x => x.User.Email)
-                                    .FirstOrDefault()
+                                    .FirstOrDefault(),
+                        IsActive = t.IsActive.GetValueOrDefault(false)
                     })
                     .AsQueryable();
 
@@ -202,13 +205,13 @@ namespace Saas_Dormitory.DAL.Repositories
                 }
 
                 // ✅ SORT
+                // Logic updated to handle CreatedDate default
                 query = model.SortColumn?.ToLower() switch
                 {
                     "tenantname" => model.SortDirection == "desc"
                         ? query.OrderByDescending(x => x.TenantName)
                         : query.OrderBy(x => x.TenantName),
 
-                   
                     "fullname" => model.SortDirection == "desc"
                         ? query.OrderByDescending(x => x.FullName)
                         : query.OrderBy(x => x.FullName),
@@ -221,7 +224,13 @@ namespace Saas_Dormitory.DAL.Repositories
                         ? query.OrderByDescending(x => x.Email)
                         : query.OrderBy(x => x.Email),
 
-                    _ => query.OrderBy(x => x.TenantId)
+                    // Explicit sort for CreatedDate if the frontend requests it
+                    "createddate" => model.SortDirection == "asc"
+                        ? query.OrderBy(x => x.CreatedDate)
+                        : query.OrderByDescending(x => x.CreatedDate),
+
+                    // DEFAULT: Order by CreatedDate Descending (Newest first)
+                    _ => query.OrderByDescending(x => x.CreatedDate)
                 };
 
                 // ✅ PAGINATION
@@ -238,8 +247,6 @@ namespace Saas_Dormitory.DAL.Repositories
                 // ✅ RESPONSE
                 response.Items = result;
                 response.iTotalRecords = totalRecords;
-                //response.PageNumber = pageNumber;
-                //response.PageSize = pageSize;
                 response.Valid = true;
                 response.Msg = "Tenant data fetched successfully";
 
@@ -271,6 +278,10 @@ namespace Saas_Dormitory.DAL.Repositories
 
                 // 2. Update Tenant Fields
                 tenant.TenantName = model.TenantName;
+                if (model.IsActive.HasValue)
+                {
+                    tenant.IsActive = model.IsActive.Value;
+                }
                 tenant.UpdatedDate = DateTime.UtcNow;
 
                 // 3. Get Related User Profile

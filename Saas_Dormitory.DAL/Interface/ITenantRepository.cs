@@ -16,7 +16,7 @@ namespace Saas_Dormitory.DAL.Interface
 
         Task<ResponseDTO> UpdateTenantAsync(UpdateTenantRequestModel model);
 
-        Task<ResponseDTO> ActivateDeactivateTenantAsync(TenantStatusRequestModel model);
+        Task<ResponseDTO> ActivateDeactivateTenantAsync(int tenantId);
     }
 
 }

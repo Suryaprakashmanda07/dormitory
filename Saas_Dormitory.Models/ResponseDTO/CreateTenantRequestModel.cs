@@ -28,6 +28,7 @@ namespace Saas_Dormitory.Models.ResponseDTO
         public string TenantName { get; set; }        
         public string FullName { get; set; }
         public string Phone { get; set; }
+        public bool? IsActive { get; set; }
     }
 
 
@@ -46,6 +47,9 @@ namespace Saas_Dormitory.Models.ResponseDTO
         public string? Phone { get; set; }
         public int TenantId { get; set; }
         public bool IsActive { get; set; } = false;
+        public DateTime? CreatedDate { get; set; }
+
+        public DateTime? UpdatedDate { get; set; }
 
     }
 }

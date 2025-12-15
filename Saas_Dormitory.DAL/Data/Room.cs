@@ -25,6 +25,8 @@ public partial class Room
 
     public string? CreatedBy { get; set; }
 
+    public bool? IsActive { get; set; }
+
     public virtual ICollection<Bed> Beds { get; set; } = new List<Bed>();
 
     public virtual Property Property { get; set; } = null!;

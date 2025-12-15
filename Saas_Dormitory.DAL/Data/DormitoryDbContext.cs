@@ -53,7 +53,10 @@ public partial class DormitoryDbContext : DbContext
 
     public virtual DbSet<Userprofile> Userprofiles { get; set; }
 
-   
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseNpgsql("Host=ballast.proxy.rlwy.net;Port=28540;Database=postgres;Username=postgres;Password=eTDkGNMsSqmDacAyXUgoQxiUyuLJwxyZ");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AspNetRole>(entity =>
@@ -366,6 +369,9 @@ public partial class DormitoryDbContext : DbContext
                 .HasMaxLength(450)
                 .HasColumnName("created_by");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
             entity.Property(e => e.PropertyId).HasColumnName("property_id");
             entity.Property(e => e.RentAmount)
                 .HasPrecision(10, 2)

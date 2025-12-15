@@ -12,6 +12,7 @@ namespace Saas_Dormitory.API.Extensions
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<ISubscriptionPlansRepository, SubscriptionPlansRepository>();
             services.AddScoped<IPropertiesRepository, PropertiesRepository>();
+            services.AddScoped<IRoomRepository, RoomRepository>();
 
             services.AddScoped<CurrentUserService>();
 

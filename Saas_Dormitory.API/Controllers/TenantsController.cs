@@ -136,9 +136,9 @@ namespace Saas_Dormitory.API.Controllers
 
         // ✅ 4. ACTIVATE / DEACTIVATE TENANT
         [HttpPost("ActivateDeactivateTenant")]
-        public async Task<IActionResult> ActivateDeactivateTenant([FromBody] TenantStatusRequestModel model)
+        public async Task<IActionResult> ActivateDeactivateTenant(int tenantId)
         {
-            var result = await _tenantRepo.ActivateDeactivateTenantAsync(model);
+            var result = await _tenantRepo.ActivateDeactivateTenantAsync(tenantId);
             return Ok(result);
         }
     }
