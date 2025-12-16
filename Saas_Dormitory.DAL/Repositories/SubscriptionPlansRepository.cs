@@ -27,6 +27,17 @@ namespace Saas_Dormitory.DAL.Repositories
 
             try
             {
+                // ✅ Check for duplicate subscription plan name (case-insensitive)
+                var existingPlan = await _db.Subscriptionplans
+                    .FirstOrDefaultAsync(p => p.Name.ToLower() == model.Name.ToLower());
+
+                if (existingPlan != null)
+                {
+                    response.Valid = false;
+                    response.Msg = "Subscription plan with this name already exists";
+                    return response;
+                }
+
                 var plan = new Subscriptionplan
                 {
                     Name = model.Name,
@@ -73,7 +84,7 @@ namespace Saas_Dormitory.DAL.Repositories
                         Price = p.Price,
                         MaxProperties = p.MaxProperties,
                         MaxUsers = p.MaxUsers,
-                        Isactive=p.Isactive,
+                        Isactive = p.Isactive.GetValueOrDefault(false),
                         Period = (int)p.Period,
                         PeriodName = EnumHelper.GetDescription((SubscriptionPeriod)p.Period)
                     })
@@ -208,6 +219,17 @@ namespace Saas_Dormitory.DAL.Repositories
                     return response;
                 }
 
+                // ✅ Check for duplicate subscription plan name (case-insensitive, excluding current plan)
+                var existingPlan = await _db.Subscriptionplans
+                    .FirstOrDefaultAsync(p => p.Name.ToLower() == model.Name.ToLower() && p.PlanId != model.PlanId);
+
+                if (existingPlan != null)
+                {
+                    response.Valid = false;
+                    response.Msg = "Subscription plan with this name already exists";
+                    return response;
+                }
+
                 plan.Name = model.Name;
                 plan.Price = model.Price;
                 plan.MaxProperties = model.MaxProperties;
@@ -244,8 +266,8 @@ namespace Saas_Dormitory.DAL.Repositories
                     return response;
                 }
 
-                // ✅ AUTO TOGGLE STATUS
-                plan.Isactive = !plan.Isactive;
+                // ✅ AUTO TOGGLE STATUS (handle nullable bool)
+                plan.Isactive = !(plan.Isactive ?? false);
                 plan.UpdatedDate = DateTime.UtcNow;
 
                 _db.Subscriptionplans.Update(plan);
@@ -253,8 +275,8 @@ namespace Saas_Dormitory.DAL.Repositories
 
                 response.Valid = true;
                 response.Msg = (bool)plan.Isactive
-                    ? "Subscription plan activated successfully"
-                    : "Subscription plan deactivated successfully";
+                    ? $"Subscription plan '{plan.Name}' activated successfully"
+                    : $"Subscription plan '{plan.Name}' deactivated successfully";
 
                 return response;
             }

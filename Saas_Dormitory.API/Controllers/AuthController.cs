@@ -117,7 +117,7 @@ namespace Saas_Dormitory.API.Controllers
                         issuer: _config["Jwt:Issuer"],
                         audience: _config["Jwt:Audience"],
                         claims: claims,
-                        expires: DateTime.UtcNow.AddYears(expireMinutes),
+                        expires: DateTime.UtcNow.AddMinutes(expireMinutes),
                         signingCredentials: creds
                     );
                     response.Item = new LoginResponse

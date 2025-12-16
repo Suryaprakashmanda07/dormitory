@@ -54,7 +54,7 @@ namespace Saas_Dormitory.API.Controllers
         }
 
         // ✅ ACTIVATE / DEACTIVATE
-        [HttpPatch("UpdateSubscriptionPlanStatus")]
+        [HttpPost("UpdateSubscriptionPlanStatus")]
         public async Task<IActionResult> UpdateStatus(int planId)
         {
             var result = await _repository.UpdateSubscriptionPlanStatusAsync(planId);

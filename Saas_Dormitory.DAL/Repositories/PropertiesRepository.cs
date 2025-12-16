@@ -73,7 +73,7 @@ namespace Saas_Dormitory.DAL.Repositories
                         City = p.City,
                         State = p.State,
                         Country = p.Country,
-                        IsActive=p.Isactive,
+                        IsActive = p.Isactive.GetValueOrDefault(false),
                         CreatedDate = p.CreatedDate
                     })
                     .FirstOrDefaultAsync();
@@ -115,7 +115,8 @@ namespace Saas_Dormitory.DAL.Repositories
                         City = p.City,
                         State = p.State,
                         Country = p.Country,
-                        IsActive=p.Isactive
+                        IsActive = p.Isactive.GetValueOrDefault(false),
+                        CreatedDate = p.CreatedDate
                     })
                     .AsQueryable();
 
@@ -226,8 +227,8 @@ namespace Saas_Dormitory.DAL.Repositories
                     return response;
                 }
 
-                // ✅ AUTO TOGGLE STATUS
-                property.Isactive = !property.Isactive;
+                // ✅ AUTO TOGGLE STATUS (handle nullable bool)
+                property.Isactive = !(property.Isactive ?? false);
                 property.UpdatedDate = DateTime.UtcNow;
 
                 _db.Properties.Update(property);
@@ -235,8 +236,8 @@ namespace Saas_Dormitory.DAL.Repositories
 
                 response.Valid = true;
                 response.Msg = (bool)property.Isactive
-                    ? "Property activated successfully"
-                    : "Property deactivated successfully";
+                    ? $"Property '{property.Name}' activated successfully"
+                    : $"Property '{property.Name}' deactivated successfully";
 
                 return response;
             }
